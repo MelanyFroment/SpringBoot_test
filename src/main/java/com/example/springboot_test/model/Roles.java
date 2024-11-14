@@ -3,17 +3,16 @@ package com.example.springboot_test.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Role {
+public class Roles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name="user_id")
-    private User user;
-
-    private String name;
+    @JoinColumn(name = "user_id")
+    private AppUser app_user;
+    private String role_name;
 
     public Long getId() {
         return id;
@@ -23,11 +22,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getRole_name() {
+        return role_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
     }
 }

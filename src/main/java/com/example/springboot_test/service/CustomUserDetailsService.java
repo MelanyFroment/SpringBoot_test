@@ -1,12 +1,13 @@
 package com.example.springboot_test.service;
 
-import com.example.springboot_test.model.User;
+import com.example.springboot_test.model.AppUser;
 import com.example.springboot_test.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -19,16 +20,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
+        AppUser appUser = userRepository.findByUsername(username);
+        System.out.println(appUser.getUsername());
+        System.out.println(appUser.getRole().getRole_name());
+        if (appUser == null) {
             throw new UsernameNotFoundException("Utilisateur non trouvé");
         }
 
-        // Attribuer les rôles à l'utilisateur
+        // Vérifier que le rôle n'est pas null
+        if (appUser.getRole() == null) {
+            throw new IllegalStateException("L'utilisateur n'a pas de rôle attribué");
+        }
+
+        // Créer une autorité à partir du nom du rôle de l'utilisateur
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + appUser.getRole().getRole_name().toUpperCase());
+
+        // Retourner un utilisateur avec son nom, mot de passe et rôle sous forme d'autorité
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())) // Utilisation de "ROLE_" pour les rôles
+                appUser.getUsername(),
+                appUser.getPassword(),
+                Collections.singletonList(authority)
         );
     }
 }

@@ -1,13 +1,14 @@
-package com.example.newspringboot_melany;
+package com.example.springboot_test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-@SpringBootApplication
-public class NewSpringBootMelanyApplication {
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+public class SpringBootTestApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NewSpringBootMelanyApplication.class, args);
+        SpringApplication.run(SpringBootTestApplication.class, args);
     }
 
 }
